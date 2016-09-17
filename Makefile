@@ -2,16 +2,18 @@ PIP_INDEX_URL = https://pypi.python.org/simple
 
 project_dir := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
-ifneq ($(TRAVIS_JOB_NUMBER),)
-egg_info_tag_build := +build$(TRAVIS_JOB_NUMBER)
+ifneq ($(TRAVIS_TAG),)
+    egg_info_tag_build :=
+else ifneq ($(TRAVIS_JOB_NUMBER),)
+    egg_info_tag_build := +build$(TRAVIS_JOB_NUMBER)
 else
-egg_info_tag_build := +dev
+    egg_info_tag_build := +dev
 endif
 
-ifeq ($(VIRTUAL_ENV)$(CONDA_ENV_PATH),)
+ifeq ($(VIRTUAL_ENV)$(CONDA_DEFAULT_ENV),)
 $(error must run in a virtualenv)
 else
-$(info running in virtualenv $(VIRTUAL_ENV)$(CONDA_ENV_PATH))
+$(info running in virtualenv $(VIRTUAL_ENV)$(CONDA_DEFAULT_ENV))
 endif
 
 # find project python source dirs
@@ -40,7 +42,7 @@ install:
 	$(pip_compile) requirements/py$(python_version_major).txt -o .cache/requirements-py$(python_version_major).txt > /dev/null
 	pip-sync -i $(PIP_INDEX_URL) .cache/requirements-py$(python_version_major).txt
 
-pytest_args := -v -l$(foreach dir,$(python_source_dirs), --ignore="$(dir)/migrations/")
+pytest_args := -v -l
 pytest_cov := $(foreach dir,$(python_source_dirs), --cov="$(dir)") --cov-report=term-missing --cov-report=html --cov-report=xml --no-cov-on-fail
 pytest := PYTHONPATH="$(project_dir)" py.test $(pytest_args)
 pytest_targets := "$(project_dir)/tests/" $(foreach dir,$(python_source_dirs), "$(dir)")

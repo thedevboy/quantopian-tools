@@ -46,6 +46,13 @@ Scripts
 
 For full API usage documentation, refer to the `API <api.html>`__
 
+v0.0.4 - 09/17/2016
+~~~~~~~~~~~~~~~~~~~
+
+-  Fixed usage of the travis build number in the Makefile
+-  Change the conda environment variable to the correct one containing only the project name
+-  Removed the generated api.rst from version control
+
 v0.0.3 - 07/07/2016
 ~~~~~~~~~~~~~~~~~~~
 
