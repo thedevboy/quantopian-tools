@@ -46,6 +46,13 @@ Scripts
 
 For full API usage documentation, refer to the `API <api.html>`__
 
+v0.0.5 - 01/14/2017
+~~~~~~~~~~~~~~~~~~~
+
+-  Added python 3.6 to the travis build
+-  Removed the unsafe usage of the project_dir variable in the Makefile
+-  Switched to using pycodestyle in place of pep8
+
 v0.0.4 - 09/17/2016
 ~~~~~~~~~~~~~~~~~~~
 

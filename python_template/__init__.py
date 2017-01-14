@@ -7,9 +7,9 @@ from __future__ import print_function, absolute_import, division, unicode_litera
 #: Package Name
 __pkg_name__ = 'python_template'
 #: Version
-__version__ = '0.0.4'  # Follow semantic versioning (http://semver.org/)
+__version__ = '0.0.5'  # Follow semantic versioning (http://semver.org/)
 #: Release Date
-__release_date__ = '09/17/2016'
+__release_date__ = '01/14/2017'
 #: License
 __license__ = 'BSD'
 #: Project Name
