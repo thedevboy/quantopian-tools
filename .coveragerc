@@ -1,8 +1,6 @@
 [run]
 branch = True
 data_file = tests/reports/.coverage
-omit =
-    */migrations/*
 
 [report]
 exclude_lines =

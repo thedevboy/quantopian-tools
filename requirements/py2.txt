@@ -1,5 +1,5 @@
 mock
-pep8
+pycodestyle
 pylint
 pytest
 pytest-cov

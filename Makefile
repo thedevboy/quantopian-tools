@@ -1,7 +1,5 @@
 PIP_INDEX_URL = https://pypi.python.org/simple
 
-project_dir := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-
 ifneq ($(TRAVIS_TAG),)
     egg_info_tag_build :=
 else ifneq ($(TRAVIS_JOB_NUMBER),)
@@ -11,13 +9,13 @@ else
 endif
 
 ifeq ($(VIRTUAL_ENV)$(CONDA_DEFAULT_ENV),)
-$(error must run in a virtualenv)
+$(error must run in a virtualenv/condaenv)
 else
 $(info running in virtualenv $(VIRTUAL_ENV)$(CONDA_DEFAULT_ENV))
 endif
 
 # find project python source dirs
-initpys := $(foreach dir,$(wildcard $(project_dir)/*),$(wildcard $(dir)/__init__.py))
+initpys := $(foreach dir,$(wildcard *),$(wildcard $(dir)/__init__.py))
 python_source_dirs := $(foreach initpy,$(initpys),$(realpath $(dir $(initpy))))
 $(info found python source in $(python_source_dirs))
 
@@ -31,9 +29,7 @@ $(info using python$(python_version_major))
 all: init install lint test build docs
 
 init:
-	pip install -i $(PIP_INDEX_URL) -U setuptools
-	pip install -i $(PIP_INDEX_URL) -U pip
-	pip install -i $(PIP_INDEX_URL) -U pip-tools
+	pip install -i $(PIP_INDEX_URL) -U setuptools pip pip-tools
 
 pip_compile = pip-compile -i $(PIP_INDEX_URL) --upgrade --rebuild --annotate --header --no-index $(pip_compile_flags)
 
@@ -42,14 +38,14 @@ install:
 	$(pip_compile) requirements/py$(python_version_major).txt -o .cache/requirements-py$(python_version_major).txt > /dev/null
 	pip-sync -i $(PIP_INDEX_URL) .cache/requirements-py$(python_version_major).txt
 
-pytest_args := -v -l$(foreach dir,$(python_source_dirs), --ignore="$(dir)/migrations/")
+pytest_args := -v -l
 pytest_cov := $(foreach dir,$(python_source_dirs), --cov="$(dir)") --cov-report=term-missing --cov-report=html --cov-report=xml --no-cov-on-fail
-pytest := PYTHONPATH="$(project_dir)" py.test $(pytest_args)
-pytest_targets := "$(project_dir)/tests/" $(foreach dir,$(python_source_dirs), "$(dir)")
+pytest := PYTHONPATH=. py.test $(pytest_args)
+pytest_targets := tests/ $(foreach dir,$(python_source_dirs), "$(dir)")
 
 lint:
-	PYTHONPATH="$(project_dir)" pylint --rcfile="$(project_dir)/pylintrc" --reports=n $(foreach dir,$(python_source_dirs), "$(dir)")
-	pep8 --show-source --format=pylint $(python_source_dirs)
+	PYTHONPATH=. pylint --rcfile=pylintrc --reports=n $(foreach dir,$(python_source_dirs), "$(dir)")
+	pycodestyle --show-source --format=pylint $(python_source_dirs)
 
 test:
 	mkdir -p tests/reports
@@ -70,12 +66,12 @@ docs:
 	cd docs && make html
 
 clean:
-	find $(project_dir) -name '*.pyc' -print -exec rm -r -- {} +
-	find $(project_dir) -name '__pycache__' -print -exec rm -r -- {} +
-	find $(project_dir) -name '.cache' -print -exec rm -r -- {} +
-	find $(project_dir) -name '*.egg-info' -print -exec rm -r -- {} +
-	rm -rfv $(project_dir)/.cache
-	rm -rfv $(project_dir)/tests/reports
-	rm -rfv $(project_dir)/build
-	rm -rfv $(project_dir)/dist
+	find . -name '*.pyc' -print -exec rm -r -- "{}" +
+	find . -name '__pycache__' -print -exec rm -r -- "{}" +
+	find . -name '.cache' -print -exec rm -r -- "{}" +
+	find . -name '*.egg-info' -print -exec rm -r -- "{}" +
+	rm -rfv ./.cache
+	rm -rfv ./tests/reports
+	rm -rfv ./build
+	rm -rfv ./dist
 	cd docs && make clean

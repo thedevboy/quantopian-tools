@@ -1,9 +1,9 @@
 language: python
 python:
   - 2.7
-  - 3.3
   - 3.4
   - 3.5
+  - 3.6
 env:
   matrix:
     secure: VvAuNfjXW8QFh4Bl+olkDlDf/818CEdMePzAxnJN5Y6mGR4X+At1oBIDBp4w1kvQfATXXLL7oJn/QrTWEsVx1u6b+gEeBWnYxw5tgS266zDrBsldc5Ynqt06BReowg8ABJI7JPHFTaGx9ZzAFCrsEEqiJZz3rTnSLgNBjmpQiohMasDbRBC6LTQcLP74KrEkOWfVCV9Bw7atNoYFgXumHPx+Z3bs88uOWlxc7+U1Bzl2KDX2IQcmfsexkOWtXeLL1QbbXlzjQ8FmQwSspj8etWyQN++8rGYX0AEsK/WFSWPIT6KMAVN9SzQcbHhqYYLRtyPWa5u5afwQWd2awhWyl/SLtO8JjYhClRK+3tlVhpo/TOvMiYs3IQ4iWd+bUk+RrTPWGqHWRUB756dP0fnBfVAM4awzT6tU7XOpUA0hacWT7cPaKaKS3F6U4M91BmQMNoPbmuoGNfwtg1jcIOg+BzSTawGxVR3IUmUKzIWnWlyCTmN7hxCirdIac2WTVFmSoZNNyFHF8Eo1vVhmV1CECgsUP8r48AoCUZb3CqBGh2ibMgdNfMFBgvYt/cPTe31inO1xEAbL4/oCKCGXJvpT6Wf13Dc01unrd11VCL2ZnUg9GYCvOlCFKepr++yyI0cnipb5cbHjsCLtSoC6gg8cUlXh1IZ6tZoc5afZ8Vckc8E=
@@ -17,8 +17,7 @@ script:
   - make test
   - make build
   - make docs
-cache:
-  pip: true
+cache: pip
 after_success:
   - codecov --required --file tests/reports/coverage.xml
 deploy:

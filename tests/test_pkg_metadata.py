@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-import re
+"""
+Test the package has valid metadata.
+"""
+from __future__ import print_function, absolute_import, division, unicode_literals
 
-import semantic_version
-import pytest
-import validators
+import re
 from datetime import datetime
+
+import pytest
+import semantic_version
+import validators
 
 import quantopian_tools
 
