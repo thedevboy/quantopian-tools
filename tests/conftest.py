@@ -33,3 +33,9 @@ def authenticated_browser(monkeypatch):
 def sample_mean_reversion_alg_code():
     with open(os.path.join(os.path.dirname(__file__), 'resources', 'sample_mean_reversion_alg.py')) as alg:
         return alg.read()
+
+
+@pytest.fixture
+def sample_logging_alg_code():
+    with open(os.path.join(os.path.dirname(__file__), 'resources', 'sample_logging_alg.py')) as alg:
+        return alg.read()

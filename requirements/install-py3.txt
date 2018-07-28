@@ -1,4 +1,4 @@
-cerberus>=1.0.1
+cerberus>=1.1
 click
 MechanicalSoup
 requests

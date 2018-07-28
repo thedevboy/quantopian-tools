@@ -4,38 +4,53 @@ from __future__ import print_function, absolute_import, division, unicode_litera
 import datetime
 
 import cerberus
+import copy
 import six
 
 from quantopian_tools.exceptions import SchemaValidationError
 
 
-def validate(data, schema, raise_exc=False, **kwargs):
+def extract_rename_schema(schema):
+    rename_schema = {}
+    for field, value in schema.items():
+        if not isinstance(value, dict):
+            continue
+        if 'rename' in value:
+            rename_schema.setdefault(field, {})['rename'] = value.pop('rename')
+        if 'schema' in value:
+            extracted = extract_rename_schema(value['schema'])
+            if extracted:
+                rename_schema.setdefault(field, {})['schema'] = extracted
+        if 'schema' == field:
+            extracted = extract_rename_schema(value)
+            if extracted:
+                rename_schema['schema'] = extracted
+    return rename_schema
+
+
+def validate(data, schema, extract_rename=True, raise_exc=False, **kwargs):
+    if extract_rename:
+        schema = copy.deepcopy(schema)
+        rename_schema = extract_rename_schema(schema)
+    else:
+        rename_schema = {}
+
     validator = CustomValidator(schema, **kwargs)
     if not validator.validate(data):
         if raise_exc:
             raise SchemaValidationError(data, schema, validator.errors)
         return False, validator.errors
+
+    if extract_rename and rename_schema:
+        doc = validator.normalized(validator.document, schema=rename_schema, always_return_document=True)
+    else:
+        doc = validator.document
     if raise_exc:
-        return validator.document
-    return True, validator.document
+        return doc
+    return True, doc
 
 
 class CustomValidator(cerberus.Validator):
-    def _normalize_rename_handler(self, mapping, schema, field):
-        """ {'oneof': [
-                {'type': 'callable'},
-                {'type': 'list',
-                 'schema': {'oneof': [{'type': 'callable'},
-                                      {'type': 'string'}]}},
-                {'type': 'string'}
-                ]} """
-        if 'rename' in schema[field]:
-            new_field = schema[field]['rename']
-            schema[new_field] = schema[field]
-            del schema[field]
-            field = new_field
-        super(CustomValidator, self)._normalize_rename_handler(mapping, schema, field)
-
     # Custom coerce functions
     def _normalize_coerce_millis_timestamp(self, value):
         if value is None:

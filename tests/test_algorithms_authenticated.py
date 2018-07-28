@@ -3,26 +3,19 @@ from __future__ import print_function, absolute_import, division, unicode_litera
 
 import datetime
 
-import pytest
-
 from quantopian_tools import algorithms
 
-skip_auth_tests = pytest.mark.skip(reason="no way of currently testing this")
 
-
-@skip_auth_tests
 def test_get_algorithm_ids(authenticated_browser):
     assert algorithms.get_algorithm_ids()
 
 
-@skip_auth_tests
 def test_get_algorithm(authenticated_browser):
     ids = algorithms.get_algorithm_ids()
     assert len(ids) > 1
     assert sorted(algorithms.get_algorithm(ids[-1]).keys()) == ['code', 'id', 'title']
 
 
-@skip_auth_tests
 def test_save_algorithm(authenticated_browser):
     ids = algorithms.get_algorithm_ids()
     assert len(ids) > 1
@@ -36,7 +29,6 @@ def test_save_algorithm(authenticated_browser):
     assert algorithms.get_algorithm(algo_id) == algo
 
 
-@skip_auth_tests
 def test_new_algorithm(authenticated_browser):
     title = 'Test ({})'.format(datetime.datetime.now().isoformat())
     algorithm_id = algorithms.new_algorithm(title)
@@ -45,7 +37,6 @@ def test_new_algorithm(authenticated_browser):
     assert algorithms.delete_algorithm(algorithm)
 
 
-@skip_auth_tests
 def test_validate_algorithm_success(authenticated_browser):
     algorithm = {
         'id': '57b11da5187a9054fb00041e',
@@ -87,7 +78,6 @@ def test_validate_algorithm_success(authenticated_browser):
     ])
 
 
-@skip_auth_tests
 def test_validate_algorithm_failure(authenticated_browser):
     algorithm = {
         'id': '57b11da5187a9054fb00041e',
